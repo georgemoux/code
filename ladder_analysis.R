@@ -66,6 +66,8 @@ anova(hmod678)
 ldp678e <- ldp %>% filter(week %in% c("week6","week7","week8")) %>% filter(type=='exp')
 hmod678e <- lme(hit_pct ~ week, random = ~1 | rat/week,na.action=na.omit,data=ldp678e)
 anova(hmod678e)
+# this shows which ones are different from each other:
+emmeans(hmod678e,pairwise~week,adjust='none')
 
 ldp678es <- ldp678e %>% group_by(week) %>% summarise(hit_pct_mn=mean(hit_pct),hit_pct_sem=std.error(hit_pct))
 
@@ -132,6 +134,7 @@ ggplot(ldp,aes(x=week,y=hit_pct,fill=type)) +
 # do a mixed effects model on hits:
 mmod <- lme(miss_pct ~ type*week, random = ~1 | rat/week,na.action=na.omit,data=ldp)
 anova(mmod)
+
 # hmm. main effect of type not significant, nor interaction. are we allowed to do follow up tests? ah, why not.
 maov <- anova_test(
   data = ldp, dv = miss_pct, wid = rat,
@@ -144,6 +147,7 @@ anova(mmod678)
 
 mmod678e <- lme(miss_pct ~ week, random = ~1 | rat/week,na.action=na.omit,data=ldp678e)
 anova(mmod678e)
+emmeans(mmod678e,pairwise~week,adjust='none')
 
 mmod678c <- lme(miss_pct ~ week, random = ~1 | rat/week,na.action=na.omit,data=ldp678c)
 anova(mmod678c)
